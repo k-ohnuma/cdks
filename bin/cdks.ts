@@ -2,6 +2,7 @@
 import { App, StackProps } from "aws-cdk-lib";
 import { VsnipStack } from "../lib/vsnip-stack";
 import { Config, DEFAULT_CONFIG } from "../lib/config";
+import { VirtualContestStack } from "../lib/virtual-contest-stack";
 
 const app = new App();
 const env = app.node.tryGetContext("env") || "dev";
@@ -19,3 +20,4 @@ const stackProps: StackProps = {
 };
 
 const _vsnip = new VsnipStack(app, `${config.resourcePrefix}-vsnip-stack`, stackProps, config);
+const _virCon = new VirtualContestStack(app, `${config.resourcePrefix}-virtual-contest-stack`, stackProps, config);

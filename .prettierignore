@@ -2,4 +2,4 @@ node_modules/
 package.json
 package-lock.json
 cdk.out/
-
+eslint.config.mjs
