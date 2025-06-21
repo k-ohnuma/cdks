@@ -12,7 +12,7 @@ export class VsnipStack extends Stack {
     const BASE_NAME = "vsnip";
     const lambda = new NodejsFunction(this, "vsnip", {
       functionName: `${config.resourcePrefix}-${BASE_NAME}`,
-      runtime: Runtime.NODEJS_20_X,
+      runtime: Runtime.NODEJS_22_X,
     });
 
     const apiGateway = new RestApi(this, "apigateway", {

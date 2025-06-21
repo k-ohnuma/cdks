@@ -13,7 +13,7 @@ export class VirtualContestStack extends Stack {
     const BASE_NAME = "virtual-contest";
     const lambda = new NodejsFunction(this, "vircon", {
       functionName: `${config.resourcePrefix}-${BASE_NAME}`,
-      runtime: Runtime.NODEJS_20_X,
+      runtime: Runtime.NODEJS_22_X,
       timeout: Duration.minutes(15),
       environment: {
         ACP_BASE_ENDPOINT: config.virtualContest.endpoint,
