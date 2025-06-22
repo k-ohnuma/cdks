@@ -81,10 +81,18 @@ export type ProblemsJson = z.infer<typeof problemsJson>;
 
 export const problemModelsJson = z.record(
   z.string(),
-  z.object({
-    difficulty: z.number().optional(),
-    is_experimental: z.boolean().optional(),
-  }),
+  z
+    .object({
+      difficulty: z.number().optional().nullable(),
+      is_experimental: z.boolean().optional().nullable(),
+    })
+    .transform((item) => {
+      return {
+        difficulty: item.difficulty ? item.difficulty : undefined,
+        is_experimental:
+          item.is_experimental === true || item.is_experimental === false ? item.is_experimental : undefined,
+      };
+    }),
 );
 export type ProblemModelsJson = z.infer<typeof problemModelsJson>;
 
