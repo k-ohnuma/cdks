@@ -1,4 +1,9 @@
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.tz.setDefault("Asia/Tokyo");
 
 export const getResponse = (response: Record<string, any>, statusCode?: number) => {
   return {
@@ -13,4 +18,8 @@ export const getResponse = (response: Record<string, any>, statusCode?: number) 
 
 export const getCurrentEpochSec = (type: "milli" | "sec"): number => {
   return type === "sec" ? dayjs().unix() : dayjs().valueOf();
+};
+
+export const getCurrentDatetime = (): string => {
+  return dayjs().tz("Asia/Tokyo").format("YYYY-MM-DDTHH:mm:ssZ");
 };

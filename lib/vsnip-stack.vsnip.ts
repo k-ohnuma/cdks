@@ -1,6 +1,6 @@
 import { APIGatewayEvent, Handler } from "aws-lambda";
 import { z } from "zod";
-import { getResponse } from "./lib";
+import { getResponse } from "./utils/lib";
 
 const eBody = z.object({
   title: z.string(),
