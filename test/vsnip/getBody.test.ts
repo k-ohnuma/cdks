@@ -1,4 +1,3 @@
-import { getCurrentDatetime } from "../../lib/lib";
 import { getBody } from "../../lib/vsnip-stack.vsnip";
 
 describe("", () => {

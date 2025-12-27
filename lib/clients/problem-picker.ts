@@ -52,6 +52,37 @@ export class ProblemPicker {
     });
   };
 
+  getRangeProblems = (start: number, end: number, colors: string[]): UpdatePromlem[] => {
+    const reg = /^abc(\d+)_/;
+    const ret: string[] = [];
+
+    for (const color of colors) {
+      const problems = this.diffMap[color as keyof DifficultyMap];
+      if (!problems) continue;
+
+      for (const problem of problems) {
+        const match = problem.id.match(reg);
+        if (!match) continue;
+
+        const idnum = Number(match[1]);
+        if (start <= idnum && idnum <= end) {
+          ret.push(problem.id);
+        }
+      }
+    }
+
+    const sorted = ret.sort((a, b) => {
+      const anum = +a.match(reg)!.at(1)!;
+      const bnum = +b.match(reg)!.at(1)!;
+      return anum - bnum;
+    });
+    return sorted.map((id, index) => ({
+      id,
+      point: 1,
+      order: index,
+    }));
+  };
+
   private clasifyProblems = (problems: Problem[]): DifficultyMap => {
     const map: DifficultyMap = {
       hai: [],

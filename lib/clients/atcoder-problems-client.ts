@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { getCurrentEpochSec } from "../utils/lib";
 import { Logger } from "pino";
-import { errors } from "../utils/error";
+import { logger } from "../utils/logger";
 
 export const contest = z.object({
   id: z.string(),
@@ -54,13 +54,15 @@ export type UpdateContestInput = {
   problems: UpdatePromlem[];
 };
 
+type ContestMode = "normal" | "training" | null;
+
 export type CreateContestInput = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   duration_second: number;
   // eslint-disable-next-line @typescript-eslint/naming-convention
   is_public: boolean;
   memo: string;
-  mode: null;
+  mode: ContestMode;
   // eslint-disable-next-line @typescript-eslint/naming-convention
   penalty_second: number;
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -81,6 +83,7 @@ export class AtcoderProblemsClient {
   constructor(baseEndpoint: string, githubToken: string) {
     this.baseEndpoint = baseEndpoint;
     this.githubToken = githubToken;
+    this.logger = logger;
   }
 
   getRecentContestEndpoint(): string {
@@ -89,6 +92,10 @@ export class AtcoderProblemsClient {
 
   getVirtualContestBaseEndpoint(): string {
     return `${this.baseEndpoint}/#/contest/show`;
+  }
+
+  getContestUrl(id: string): string {
+    return `${this.getVirtualContestBaseEndpoint()}/${id}`;
   }
 
   getProblemsModelEndpoint(): string {
@@ -149,18 +156,26 @@ export class AtcoderProblemsClient {
     try {
       const endpoint = this.getCreateContestEndpoint();
       const create = await fetch(endpoint, {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
           Cookie: `token=${this.githubToken}`,
         },
-        method: "POST",
         body: JSON.stringify(body),
       });
+      if (!create.ok) {
+        const text = await create.text();
+        this.logger.error({
+          msg: text,
+          status: create.status,
+        });
+        throw text;
+      }
       const rjson = await create.json();
       const json = createResp.parse(rjson);
       return json.contest_id;
     } catch (e) {
-      this.handleError(e);
+      console.error(e);
       throw e;
     }
   };
@@ -168,7 +183,7 @@ export class AtcoderProblemsClient {
   callUpdateContest = async (body: UpdateContestInput) => {
     try {
       const endpoint = this.getUpdateContestEndpoint();
-      const _create = await fetch(endpoint, {
+      const update = await fetch(endpoint, {
         headers: {
           "Content-Type": "application/json",
           Cookie: `token=${this.githubToken}`,
@@ -176,8 +191,15 @@ export class AtcoderProblemsClient {
         method: "POST",
         body: JSON.stringify(body),
       });
+      if (!update.ok) {
+        const text = await update.text();
+        this.logger.error({
+          msg: text,
+          status: update.status,
+        });
+      }
     } catch (e) {
-      this.handleError(e);
+      console.error(e);
       throw e;
     }
   };
@@ -192,13 +214,13 @@ export class AtcoderProblemsClient {
       await this.callUpdateContest(update);
       return createId;
     } catch (e) {
-      this.handleError(e);
+      console.error(e);
       throw e;
     }
   };
 
   private handleError(e: unknown) {
     this.logger.error(e);
-    throw errors.upstreamBadGateway({ type: "atcoder-problems" });
+    throw e;
   }
 }

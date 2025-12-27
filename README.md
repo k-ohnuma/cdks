@@ -13,3 +13,8 @@
 ### vircon-stack
 
 Atcoderバーチャルコンテスト作成Lambda(EventBridge駆動)
+
+### virtual-contest-abc-picker-stack
+
+AtCoderバーチャルコンテストをコンテスト番号とrangeでまとめて作成できるAPI
+(フロント：https://k-ohnuma.github.io/virtual)
