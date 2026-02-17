@@ -18,3 +18,7 @@ Atcoderバーチャルコンテスト作成Lambda(EventBridge駆動)
 
 AtCoderバーチャルコンテストをコンテスト番号とrangeでまとめて作成できるAPI
 (フロント：https://k-ohnuma.github.io/virtual)
+
+### problem-diff-stack
+
+AtCoder Problemsのdifficultyを個別指定で取得できるAPI

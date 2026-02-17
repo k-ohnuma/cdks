@@ -77,10 +77,10 @@ export type CreateId = string;
 
 export class AtcoderProblemsClient {
   private baseEndpoint: string;
-  private githubToken: string;
+  private githubToken?: string;
   private logger: Logger;
 
-  constructor(baseEndpoint: string, githubToken: string) {
+  constructor(baseEndpoint: string, githubToken?: string) {
     this.baseEndpoint = baseEndpoint;
     this.githubToken = githubToken;
     this.logger = logger;

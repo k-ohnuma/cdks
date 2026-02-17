@@ -4,6 +4,7 @@ import { VsnipStack } from "../lib/vsnip-stack";
 import { Config, DEFAULT_CONFIG } from "../lib/config";
 import { VirtualContestStack } from "../lib/virtual-contest-stack";
 import { VirtualContestAbcPickerStack } from "../lib/virtual-contest-abc-picker-stack";
+import { ProblemDiffStack } from "../lib/problem-diff-stack";
 
 const app = new App();
 const env = app.node.tryGetContext("env") || "dev";
@@ -29,3 +30,4 @@ const _va = new VirtualContestAbcPickerStack(
   stackProps,
   config,
 );
+const _diff = new ProblemDiffStack(app, `${config.resourcePrefix}-problem-diff-stack`, stackProps, config);
