@@ -46,7 +46,7 @@ export class ProblemDiffStack extends Stack {
 
     const rule = new Rule(this, "rule", {
       ruleName: `${config.resourcePrefix}-${projectname}-${config.env}`,
-      schedule: Schedule.cron({ hour: "17", minute: "0", weekDay: "WED" }),
+      schedule: Schedule.cron({ hour: "16", minute: "0", weekDay: "SAT,SUN,MON" }),
     });
     rule.addTarget(new LambdaFunction(lambda));
 
