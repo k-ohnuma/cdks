@@ -1,5 +1,7 @@
 import { APIGatewayEvent, Handler } from "aws-lambda";
 import { z } from "zod";
+import { getErrorResponse, parseEnv, parseRequestBody } from "./utils/api";
+import { errors } from "./utils/error";
 import { getResponse } from "./utils/lib";
 import { AtcoderProblemsClient, CreateContestInput } from "./clients/atcoder-problems-client";
 import { ProblemPicker } from "./clients/problem-picker";
@@ -36,13 +38,6 @@ const eBody = z
     };
   });
 
-const codeToMsg = {
-  400: "invalid request format",
-  401: "authorization required",
-  404: "not found",
-  500: "internal server error",
-};
-
 export const envs = z
   .object({
     ACP_BASE_ENDPOINT: z.string(),
@@ -54,11 +49,6 @@ export const envs = z
     };
   });
 
-const responseError = (code: number) => {
-  const msg = codeToMsg[code as keyof typeof codeToMsg] ?? "unknown error";
-  return getResponse({ error: msg }, code);
-};
-
 const getToken = (authorization?: string): string | undefined => {
   if (!authorization) return undefined;
   const m = authorization.match(/^Bearer\s+(.+)$/i);
@@ -67,22 +57,12 @@ const getToken = (authorization?: string): string | undefined => {
 
 export const handler: Handler = async (event: APIGatewayEvent) => {
   try {
-    const rbody = event.body ?? "{}";
     const authorization = event.headers["Authorization"] ?? event.headers["authorization"] ?? "";
-    let jsonBody: unknown;
-    try {
-      jsonBody = JSON.parse(rbody);
-    } catch {
-      return responseError(400);
-    }
-    const eventBody = eBody.safeParse(jsonBody);
-    if (!eventBody.success) return responseError(400);
-    const body = eventBody.data;
-    if (!eventBody.success) return responseError(400);
+    const body = parseRequestBody(eBody, event.body);
     const token = getToken(authorization);
-    if (!token) return responseError(401);
+    if (!token) throw errors.unauthorized({ msg: "Authorization bearer token is required", type: "request" });
 
-    const env = envs.parse(process.env);
+    const env = parseEnv(envs, process.env);
 
     const setting = contestSettings(body.startEpochSecond, body.durationSecond, body.isPublic, body.mode, body.title);
 
@@ -98,8 +78,7 @@ export const handler: Handler = async (event: APIGatewayEvent) => {
 
     return getResponse({ url });
   } catch (e) {
-    console.error(e);
-    return responseError(500);
+    return getErrorResponse(e);
   }
 };
 

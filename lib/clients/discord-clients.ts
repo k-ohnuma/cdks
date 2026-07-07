@@ -1,6 +1,6 @@
 import { Logger } from "pino";
 import { logger } from "../utils/logger";
-import { codeToThrow, errors } from "../utils/error";
+import { AppError, codeToThrow, errors } from "../utils/error";
 
 export class DiscordClient {
   private endpoint: string;
@@ -35,7 +35,10 @@ export class DiscordClient {
     }
   };
 
-  private handleError(e: unknown) {
+  private handleError(e: unknown): never {
+    if (e instanceof AppError) {
+      throw e;
+    }
     this.logger.error(e);
     throw errors.upstreamBadGateway({ type: "discord" });
   }

@@ -13,9 +13,11 @@ export class AppError extends Error {
   readonly type?: string;
   constructor(code: ErrorCode, status: number, message: string, type?: string) {
     super(message);
+    this.name = "AppError";
     this.code = code;
     this.status = status;
     this.type = type;
+    Object.setPrototypeOf(this, AppError.prototype);
   }
 }
 

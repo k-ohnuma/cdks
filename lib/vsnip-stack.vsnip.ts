@@ -1,5 +1,6 @@
 import { APIGatewayEvent, Handler } from "aws-lambda";
 import { z } from "zod";
+import { getErrorResponse, parseRequestBody } from "./utils/api";
 import { getResponse } from "./utils/lib";
 
 const eBody = z.object({
@@ -23,29 +24,22 @@ export const getBody = (bodyString: string): string[] => {
 };
 
 export const handler: Handler = async (event: APIGatewayEvent) => {
-  const rbody = event.body ?? "{}";
-  const jsonBody = JSON.parse(rbody);
-  const eventBody = eBody.safeParse(jsonBody);
-  if (!eventBody.success) {
-    return getResponse(
-      {
-        error: "invalid request json format",
+  try {
+    const eventBody = parseRequestBody(eBody, event.body);
+    const title = eventBody.title.trim();
+    const description = eventBody.description.trim();
+    const prefix = eventBody.prefix.trim();
+    const body = getBody(eventBody.body);
+
+    const vsnip: Vsnip = {
+      [title]: {
+        prefix,
+        body,
+        description,
       },
-      400,
-    );
+    };
+    return getResponse(vsnip);
+  } catch (e) {
+    return getErrorResponse(e);
   }
-
-  const title = eventBody.data.title.trim();
-  const description = eventBody.data.description.trim();
-  const prefix = eventBody.data.prefix.trim();
-  const body = getBody(eventBody.data.body);
-
-  const vsnip: Vsnip = {
-    [title]: {
-      prefix,
-      body,
-      description,
-    },
-  };
-  return getResponse(vsnip);
 };

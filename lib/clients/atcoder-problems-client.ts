@@ -2,6 +2,7 @@ import { z } from "zod";
 import { getCurrentEpochSec } from "../utils/lib";
 import { Logger } from "pino";
 import { logger } from "../utils/logger";
+import { AppError, codeToThrow, errors } from "../utils/error";
 
 export const contest = z.object({
   id: z.string(),
@@ -118,6 +119,7 @@ export class AtcoderProblemsClient {
     try {
       const endpoint = this.getRecentContestEndpoint();
       const f = await fetch(endpoint);
+      if (!f.ok) codeToThrow(f.status, f.statusText, "atcoder-problems");
       const json = await f.json();
       const resp: Contest[] = contest.array().parse(json);
       const now = getCurrentEpochSec("sec");
@@ -125,18 +127,17 @@ export class AtcoderProblemsClient {
       return resp.filter((cc) => cc.start_epoch_second > now && cc.start_epoch_second < end);
     } catch (e) {
       this.handleError(e);
-      throw e;
     }
   };
   getPromblemsJson = async (): Promise<ProblemsJson> => {
     try {
       const endpoint = this.getProblemsEndpoint();
       const f = await fetch(endpoint);
+      if (!f.ok) codeToThrow(f.status, f.statusText, "atcoder-problems");
       const json = await f.json();
       return problemsJson.parse(json);
     } catch (e) {
       this.handleError(e);
-      throw e;
     }
   };
 
@@ -144,11 +145,11 @@ export class AtcoderProblemsClient {
     try {
       const endpoint = this.getProblemsModelEndpoint();
       const f = await fetch(endpoint);
+      if (!f.ok) codeToThrow(f.status, f.statusText, "atcoder-problems");
       const json = await f.json();
       return problemModelsJson.parse(json);
     } catch (e) {
       this.handleError(e);
-      throw e;
     }
   };
 
@@ -168,15 +169,15 @@ export class AtcoderProblemsClient {
         this.logger.error({
           msg: text,
           status: create.status,
+          type: "atcoder-problems",
         });
-        throw text;
+        codeToThrow(create.status, create.statusText || text, "atcoder-problems");
       }
       const rjson = await create.json();
       const json = createResp.parse(rjson);
       return json.contest_id;
     } catch (e) {
-      console.error(e);
-      throw e;
+      this.handleError(e);
     }
   };
 
@@ -196,11 +197,12 @@ export class AtcoderProblemsClient {
         this.logger.error({
           msg: text,
           status: update.status,
+          type: "atcoder-problems",
         });
+        codeToThrow(update.status, update.statusText || text, "atcoder-problems");
       }
     } catch (e) {
-      console.error(e);
-      throw e;
+      this.handleError(e);
     }
   };
 
@@ -214,13 +216,15 @@ export class AtcoderProblemsClient {
       await this.callUpdateContest(update);
       return createId;
     } catch (e) {
-      console.error(e);
-      throw e;
+      this.handleError(e);
     }
   };
 
-  private handleError(e: unknown) {
+  private handleError(e: unknown): never {
+    if (e instanceof AppError) {
+      throw e;
+    }
     this.logger.error(e);
-    throw e;
+    throw errors.upstreamBadGateway({ type: "atcoder-problems" });
   }
 }
