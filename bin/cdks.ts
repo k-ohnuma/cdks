@@ -5,6 +5,7 @@ import { Config, DEFAULT_CONFIG } from "../lib/config";
 import { VirtualContestStack } from "../lib/virtual-contest-stack";
 import { VirtualContestAbcPickerStack } from "../lib/virtual-contest-abc-picker-stack";
 import { ProblemDiffStack } from "../lib/problem-diff-stack";
+import { HealthCheckStack } from "../lib/health-check-stack";
 
 const app = new App();
 const env = app.node.tryGetContext("env") || "dev";
@@ -31,3 +32,5 @@ const _va = new VirtualContestAbcPickerStack(
   config,
 );
 const _diff = new ProblemDiffStack(app, `${config.resourcePrefix}-problem-diff-stack`, stackProps, config);
+
+const _healthCheck = new HealthCheckStack(app, `${config.resourcePrefix}-health-check-stack`, stackProps, config);
