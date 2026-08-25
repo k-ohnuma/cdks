@@ -1,4 +1,4 @@
-import { RemovalPolicy, Stack, StackProps } from "aws-cdk-lib";
+import { Duration, RemovalPolicy, Stack, StackProps } from "aws-cdk-lib";
 import { Cors, LambdaIntegration, RestApi } from "aws-cdk-lib/aws-apigateway";
 import { Runtime } from "aws-cdk-lib/aws-lambda";
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
@@ -33,6 +33,7 @@ export class MeowHydrationStack extends Stack {
       entry: path.join(__dirname, "../meow-hydration/bootstrap/handler.ts"),
       functionName: `${config.resourcePrefix}-${BASE_NAME}`,
       runtime: Runtime.NODEJS_24_X,
+      timeout: Duration.seconds(30),
       environment: {
         TABLE_NAME: table.tableName,
         // コンソールから手で設定
@@ -47,6 +48,7 @@ export class MeowHydrationStack extends Stack {
       entry: path.join(__dirname, "../meow-hydration/bootstrap/daily-report-handler.ts"),
       functionName: `${config.resourcePrefix}-${BASE_NAME}-daily-report`,
       runtime: Runtime.NODEJS_24_X,
+      timeout: Duration.seconds(30),
       environment: {
         TABLE_NAME: table.tableName,
         // コンソールから手で設定
