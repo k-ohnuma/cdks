@@ -24,4 +24,47 @@ describe("DynamoDbDrinkEventRepository", () => {
       },
     });
   });
+
+  it("queries drink events in the specified range", async () => {
+    const client = {
+      query: jest.fn(async () => ({
+        Items: [
+          {
+            waterSourceId: "WATER#01",
+            occurredAt: "2026-08-25T08:31:00+0900",
+            type: "DRINK",
+            amountMl: 18.2,
+          },
+        ],
+      })),
+    } as unknown as DynamoDBDocument;
+    const repository = new DynamoDbDrinkEventRepository("hydration-table", client);
+
+    await expect(
+      repository.findByOccurredAtRange("2026-08-25T00:00:00+0900", "2026-08-26T00:00:00+0900"),
+    ).resolves.toStrictEqual([
+      {
+        timestamp: "2026-08-25T08:31:00+0900",
+        type: "DRINK",
+        amountMl: 18.2,
+      },
+    ]);
+    expect(client.query).toHaveBeenCalledWith({
+      TableName: "hydration-table",
+      KeyConditionExpression: "#waterSourceId = :waterSourceId AND #occurredAt >= :from AND #occurredAt < :to",
+      FilterExpression: "#type = :type",
+      ExpressionAttributeNames: {
+        "#waterSourceId": "waterSourceId",
+        "#occurredAt": "occurredAt",
+        "#type": "type",
+      },
+      ExpressionAttributeValues: {
+        ":waterSourceId": "WATER#01",
+        ":from": "2026-08-25T00:00:00+0900",
+        ":to": "2026-08-26T00:00:00+0900",
+        ":type": "DRINK",
+      },
+      ExclusiveStartKey: undefined,
+    });
+  });
 });

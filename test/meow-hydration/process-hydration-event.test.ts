@@ -5,6 +5,7 @@ import { MessageSender } from "../../lib/shared/messaging/message-sender";
 describe("ProcessHydrationEvent", () => {
   const repository: DrinkEventRepository = {
     save: jest.fn(async () => {}),
+    findByOccurredAtRange: jest.fn(async () => []),
   };
   const messageSender: MessageSender = {
     postMessage: jest.fn(async () => {}),
@@ -25,7 +26,7 @@ describe("ProcessHydrationEvent", () => {
     await expect(usecase.execute(event)).resolves.toStrictEqual({ stored: true });
     expect(repository.save).toHaveBeenCalledWith(event);
     expect(messageSender.postMessage).toHaveBeenCalledWith(
-      "水が飲まれたようです！\n時間: 2026-08-25T08:31:00+0900\n飲水量: 18.2ml",
+      "水を飲んでくれたようです！\n時間: 2026-08-25T08:31:00+0900\n飲水量: 18.2ml",
     );
   });
 

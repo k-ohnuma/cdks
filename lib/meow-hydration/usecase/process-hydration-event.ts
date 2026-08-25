@@ -23,7 +23,7 @@ export class ProcessHydrationEvent implements ProcessHydrationEventInputPort {
     }
 
     await this.repository.save(event);
-    await this.postMessage(`水が飲まれたようです！\n時間: ${event.timestamp}\n飲水量: ${event.amountMl}ml`);
+    await this.postMessage(`水を飲んでくれたようです！\n時間: ${event.timestamp}\n飲水量: ${event.amountMl}ml`);
     return { stored: true };
   }
 
