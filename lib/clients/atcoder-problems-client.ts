@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { getCurrentEpochSec } from "../utils/lib";
+import { getCurrentEpochSec } from "../shared/datetime/clock";
 import { Logger } from "pino";
-import { logger } from "../utils/logger";
-import { AppError, codeToThrow, errors } from "../utils/error";
+import { AppError, codeToThrow, errors } from "../shared/errors/app-error";
+import { logger } from "../shared/logging/logger";
 
 export const contest = z.object({
   id: z.string(),
@@ -35,7 +35,7 @@ export const problemModelsJson = z.record(
     })
     .transform((item) => {
       return {
-        difficulty: item.difficulty ? item.difficulty : undefined,
+        difficulty: item.difficulty ?? undefined,
         is_experimental:
           item.is_experimental === true || item.is_experimental === false ? item.is_experimental : undefined,
       };
