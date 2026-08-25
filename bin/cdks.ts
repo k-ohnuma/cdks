@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 import { App, StackProps } from "aws-cdk-lib";
-import { VsnipStack } from "../lib/stacks/vsnip-stack";
+// import { VsnipStack } from "../lib/stacks/vsnip-stack";
 import { Config, DEFAULT_CONFIG } from "../lib/stacks/config";
 import { VirtualContestStack } from "../lib/stacks/virtual-contest-stack";
 import { VirtualContestAbcPickerStack } from "../lib/stacks/virtual-contest-abc-picker-stack";
 import { ProblemDiffStack } from "../lib/stacks/problem-diff-stack";
 import { HealthCheckStack } from "../lib/stacks/health-check-stack";
+import { MeowHydrationStack } from "../lib/stacks/meow-hydration-stack";
 
 const app = new App();
 const env = app.node.tryGetContext("env") || "dev";
@@ -34,3 +35,4 @@ const _va = new VirtualContestAbcPickerStack(
 const _diff = new ProblemDiffStack(app, `${config.resourcePrefix}-problem-diff-stack`, stackProps, config);
 
 const _healthCheck = new HealthCheckStack(app, `${config.resourcePrefix}-health-check-stack`, stackProps, config);
+const _meowHydration = new MeowHydrationStack(app, `${config.resourcePrefix}-meow-hydration-stack`, stackProps, config);

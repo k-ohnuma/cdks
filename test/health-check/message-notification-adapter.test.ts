@@ -1,4 +1,4 @@
-import { MessageSender } from "../../lib/clients/message-sender";
+import { MessageSender } from "../../lib/shared/messaging/message-sender";
 import { MessageNotificationAdapter } from "../../lib/shared/notification/message-notification-adapter";
 
 describe("MessageNotificationAdapter", () => {

@@ -27,3 +27,9 @@ AtCoder Problemsのdifficultyを個別指定で取得できるAPI
 
 5minに1回指定したエンドポイントにリクエストを投げるLambda(EventBridge駆動)
 ヘルスチェックと言いつつ、それより大事な存在理由はコールドスタートへの悪あがき。
+
+### meow-hydration-stack
+
+猫の水分管理DB & line botに通知を投げるLambda
+水分補給状況のPOSTをするAPIと日時レポートをEventBridge駆動で通知を送るLambdaの2つを構えている。
+POSTするマイコンの実装は https://github.com/k-ohnuma/meow-hydration
