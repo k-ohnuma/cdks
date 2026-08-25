@@ -35,7 +35,7 @@ export const problemModelsJson = z.record(
     })
     .transform((item) => {
       return {
-        difficulty: item.difficulty ? item.difficulty : undefined,
+        difficulty: item.difficulty ?? undefined,
         is_experimental:
           item.is_experimental === true || item.is_experimental === false ? item.is_experimental : undefined,
       };
