@@ -5,6 +5,7 @@ import { Construct } from "constructs";
 import { Config } from "./config";
 import { Rule, Schedule } from "aws-cdk-lib/aws-events";
 import { LambdaFunction } from "aws-cdk-lib/aws-events-targets";
+import path from "node:path";
 
 export class VirtualContestStack extends Stack {
   constructor(scope: Construct, id: string, props: StackProps, config: Config) {
@@ -12,6 +13,7 @@ export class VirtualContestStack extends Stack {
 
     const BASE_NAME = "virtual-contest";
     const lambda = new NodejsFunction(this, "vircon", {
+      entry: path.join(__dirname, "virtual-contest/bootstrap/handler.ts"),
       functionName: `${config.resourcePrefix}-${BASE_NAME}`,
       runtime: Runtime.NODEJS_22_X,
       timeout: Duration.minutes(15),
