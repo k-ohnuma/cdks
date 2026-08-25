@@ -1,4 +1,4 @@
-import { Stack, StackProps } from "aws-cdk-lib";
+import { Duration, Stack, StackProps } from "aws-cdk-lib";
 import { Cors, LambdaIntegration, RestApi } from "aws-cdk-lib/aws-apigateway";
 import { Runtime } from "aws-cdk-lib/aws-lambda";
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
@@ -6,15 +6,19 @@ import { Construct } from "constructs";
 import { Config } from "./config";
 import path from "node:path";
 
-export class VsnipStack extends Stack {
+export class VirtualContestAbcPickerStack extends Stack {
   constructor(scope: Construct, id: string, props: StackProps, config: Config) {
     super(scope, id, props);
 
-    const BASE_NAME = "vsnip";
-    const lambda = new NodejsFunction(this, "vsnip", {
-      entry: path.join(__dirname, "vsnip/bootstrap/handler.ts"),
+    const BASE_NAME = "virtual-contest-selector";
+    const lambda = new NodejsFunction(this, "api", {
+      entry: path.join(__dirname, "../virtual-contest-abc-picker/bootstrap/handler.ts"),
       functionName: `${config.resourcePrefix}-${BASE_NAME}`,
-      runtime: Runtime.NODEJS_22_X,
+      runtime: Runtime.NODEJS_24_X,
+      environment: {
+        ACP_BASE_ENDPOINT: config.virtualContest.endpoint,
+      },
+      timeout: Duration.seconds(60),
     });
 
     const apiGateway = new RestApi(this, "apigateway", {
@@ -29,14 +33,7 @@ export class VsnipStack extends Stack {
       },
     });
     apiGateway.root.addMethod("POST", new LambdaIntegration(lambda, { allowTestInvoke: false }), {
-      apiKeyRequired: true,
+      apiKeyRequired: false,
     });
-
-    const apiKey = apiGateway.addApiKey("api-key", {
-      apiKeyName: `${config.resourcePrefix}-${BASE_NAME}-apikey`,
-    });
-    const usagePlan = apiGateway.addUsagePlan("usage-plan");
-    usagePlan.addApiKey(apiKey);
-    usagePlan.addApiStage({ stage: apiGateway.deploymentStage });
   }
 }

@@ -26,7 +26,7 @@ export class ProblemDiffStack extends Stack {
     });
 
     const api = new NodejsFunction(this, "api", {
-      entry: path.join(__dirname, "problem-diff/bootstrap/api-handler.ts"),
+      entry: path.join(__dirname, "../problem-diff/bootstrap/api-handler.ts"),
       functionName: `${config.resourcePrefix}-${projectname}-api-${config.env}`,
       runtime: Runtime.NODEJS_22_X,
       timeout: Duration.seconds(30),
@@ -34,7 +34,7 @@ export class ProblemDiffStack extends Stack {
     });
 
     const sync = new NodejsFunction(this, "sync", {
-      entry: path.join(__dirname, "problem-diff/bootstrap/sync-problem-difficulties-handler.ts"),
+      entry: path.join(__dirname, "../problem-diff/bootstrap/sync-problem-difficulties-handler.ts"),
       functionName: `${config.resourcePrefix}-${projectname}-sync-${config.env}`,
       runtime: Runtime.NODEJS_22_X,
       timeout: Duration.seconds(300),

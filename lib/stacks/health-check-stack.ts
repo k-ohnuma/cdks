@@ -14,7 +14,7 @@ export class HealthCheckStack extends Stack {
     const projectname = "health-check";
 
     const lambda = new NodejsFunction(this, "fetch", {
-      entry: path.join(__dirname, "health-check/bootstrap/handler.ts"),
+      entry: path.join(__dirname, "../health-check/bootstrap/handler.ts"),
       functionName: `${config.resourcePrefix}-${projectname}-${config.env}`,
       runtime: Runtime.NODEJS_24_X,
       timeout: Duration.seconds(300),
