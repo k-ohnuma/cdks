@@ -4,6 +4,7 @@ import { Runtime } from "aws-cdk-lib/aws-lambda";
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 import { Construct } from "constructs";
 import { Config } from "./config";
+import path from "node:path";
 
 export class VirtualContestAbcPickerStack extends Stack {
   constructor(scope: Construct, id: string, props: StackProps, config: Config) {
@@ -11,6 +12,7 @@ export class VirtualContestAbcPickerStack extends Stack {
 
     const BASE_NAME = "virtual-contest-selector";
     const lambda = new NodejsFunction(this, "api", {
+      entry: path.join(__dirname, "virtual-contest-abc-picker/bootstrap/handler.ts"),
       functionName: `${config.resourcePrefix}-${BASE_NAME}`,
       runtime: Runtime.NODEJS_24_X,
       environment: {
