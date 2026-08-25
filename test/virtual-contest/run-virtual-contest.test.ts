@@ -1,4 +1,4 @@
-import { NotificationPort } from "../../lib/notification/notification-port";
+import { NotificationPort } from "../../lib/shared/notification/notification-port";
 import { ContestSummary, CreatedVirtualContest } from "../../lib/virtual-contest/usecase/models/virtual-contest";
 import { VirtualContestGateway } from "../../lib/virtual-contest/usecase/ports/virtual-contest-gateway";
 import { RunVirtualContest, RunVirtualContestInput } from "../../lib/virtual-contest/usecase/run-virtual-contest";

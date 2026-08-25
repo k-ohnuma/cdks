@@ -1,4 +1,4 @@
-import { MessageSender } from "../clients/message-sender";
+import { MessageSender } from "../../clients/message-sender";
 import { Notification, NotificationPort } from "./notification-port";
 
 export class MessageNotificationAdapter implements NotificationPort {

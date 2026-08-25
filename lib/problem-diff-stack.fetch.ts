@@ -1,5 +1,5 @@
 import { Handler } from "aws-lambda";
-import { logger } from "./utils/logger";
+import { logger } from "./shared/logging/logger";
 import { AwsDynamoDBDocumentClient } from "./clients/dynamo-db-client";
 import { ProblemDifficultyRepository } from "./repo/problem-diff-table";
 import { z } from "zod";

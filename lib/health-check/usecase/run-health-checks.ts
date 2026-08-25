@@ -1,6 +1,6 @@
 import { HealthCheckFailure, HealthCheckResult } from "./models/health-check-result";
 import { HealthCheckPort } from "./ports/health-check-port";
-import { NotificationPort } from "../../notification/notification-port";
+import { NotificationPort } from "../../shared/notification/notification-port";
 
 export type RunHealthChecksInput = {
   urls: string[];

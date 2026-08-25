@@ -1,11 +1,12 @@
 import { APIGatewayEvent, Handler } from "aws-lambda";
 import { z } from "zod";
-import { getErrorResponse, parseEnv } from "./utils/api";
-import { errors } from "./utils/error";
-import { getResponse } from "./utils/lib";
+import { getErrorResponse } from "./shared/api/error-response";
+import { getResponse } from "./shared/api/response";
+import { parseEnv } from "./shared/environment/parse-env";
+import { errors } from "./shared/errors/app-error";
 import { ProblemDifficulty, ProblemDifficultyRepository } from "./repo/problem-diff-table";
 import { AwsDynamoDBDocumentClient } from "./clients/dynamo-db-client";
-import { logger } from "./utils/logger";
+import { logger } from "./shared/logging/logger";
 
 const envSchema = z
   .object({

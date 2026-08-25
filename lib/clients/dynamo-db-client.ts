@@ -11,7 +11,7 @@ import {
   UpdateCommandInput,
 } from "@aws-sdk/lib-dynamodb";
 import { Logger } from "pino";
-import { AppError, errors } from "../utils/error";
+import { AppError, errors } from "../shared/errors/app-error";
 
 export class AwsDynamoDBDocumentClient {
   private client: DynamoDBDocument;

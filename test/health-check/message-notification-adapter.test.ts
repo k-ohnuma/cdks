@@ -1,5 +1,5 @@
 import { MessageSender } from "../../lib/clients/message-sender";
-import { MessageNotificationAdapter } from "../../lib/notification/message-notification-adapter";
+import { MessageNotificationAdapter } from "../../lib/shared/notification/message-notification-adapter";
 
 describe("MessageNotificationAdapter", () => {
   it("formats a notification and delegates it to the message sender", async () => {

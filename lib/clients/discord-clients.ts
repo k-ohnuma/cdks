@@ -1,6 +1,6 @@
 import { Logger } from "pino";
-import { logger as defaultLogger } from "../utils/logger";
-import { AppError, codeToThrow, errors } from "../utils/error";
+import { AppError, codeToThrow, errors } from "../shared/errors/app-error";
+import { logger as defaultLogger } from "../shared/logging/logger";
 import { MessageSender } from "./message-sender";
 
 export class DiscordClient implements MessageSender {

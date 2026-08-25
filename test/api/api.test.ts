@@ -1,7 +1,9 @@
 import { z } from "zod";
-import { getErrorResponse, parseEnv, parseRequestBody } from "../../lib/utils/api";
-import { errors } from "../../lib/utils/error";
-import { logger } from "../../lib/utils/logger";
+import { getErrorResponse } from "../../lib/shared/api/error-response";
+import { parseRequestBody } from "../../lib/shared/api/request";
+import { parseEnv } from "../../lib/shared/environment/parse-env";
+import { errors } from "../../lib/shared/errors/app-error";
+import { logger } from "../../lib/shared/logging/logger";
 
 describe("parseRequestBody", () => {
   const schema = z.object({

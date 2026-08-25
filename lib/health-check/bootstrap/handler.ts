@@ -1,7 +1,7 @@
 import { Handler } from "aws-lambda";
 import { DiscordClient } from "../../clients/discord-clients";
-import { MessageNotificationAdapter } from "../../notification/message-notification-adapter";
-import { NotificationPort } from "../../notification/notification-port";
+import { MessageNotificationAdapter } from "../../shared/notification/message-notification-adapter";
+import { NotificationPort } from "../../shared/notification/notification-port";
 import { FetchHealthCheckAdapter } from "../infrastructure/fetch-health-check-adapter";
 import { RunHealthChecks } from "../usecase/run-health-checks";
 import { parseHealthCheckConfig } from "./config";

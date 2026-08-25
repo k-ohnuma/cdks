@@ -1,4 +1,4 @@
-import { Notification, NotificationPort } from "../../notification/notification-port";
+import { Notification, NotificationPort } from "../../shared/notification/notification-port";
 import { ContestSummary, ProblemDifficulty } from "./models/virtual-contest";
 import { VirtualContestGateway } from "./ports/virtual-contest-gateway";
 import { getProblemDifficultyLabel } from "./virtual-contest-rules";

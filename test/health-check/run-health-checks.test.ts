@@ -1,7 +1,7 @@
 import { HealthCheckResult } from "../../lib/health-check/usecase/models/health-check-result";
 import { HealthCheckPort } from "../../lib/health-check/usecase/ports/health-check-port";
 import { RunHealthChecks } from "../../lib/health-check/usecase/run-health-checks";
-import { NotificationPort } from "../../lib/notification/notification-port";
+import { NotificationPort } from "../../lib/shared/notification/notification-port";
 
 describe("RunHealthChecks", () => {
   it("does not send a notification when every endpoint is healthy", async () => {

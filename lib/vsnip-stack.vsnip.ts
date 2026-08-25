@@ -1,7 +1,8 @@
 import { APIGatewayEvent, Handler } from "aws-lambda";
 import { z } from "zod";
-import { getErrorResponse, parseRequestBody } from "./utils/api";
-import { getResponse } from "./utils/lib";
+import { getErrorResponse } from "./shared/api/error-response";
+import { parseRequestBody } from "./shared/api/request";
+import { getResponse } from "./shared/api/response";
 
 const eBody = z.object({
   title: z.string(),
