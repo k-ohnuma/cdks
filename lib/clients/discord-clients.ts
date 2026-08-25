@@ -1,17 +1,15 @@
 import { Logger } from "pino";
-import { logger } from "../utils/logger";
+import { logger as defaultLogger } from "../utils/logger";
 import { AppError, codeToThrow, errors } from "../utils/error";
+import { MessageSender } from "./message-sender";
 
-export class DiscordClient {
-  private endpoint: string;
-  private logger: Logger;
+export class DiscordClient implements MessageSender {
+  constructor(
+    private readonly endpoint: string,
+    private readonly logger: Logger = defaultLogger,
+  ) {}
 
-  constructor(endpoint: string) {
-    this.endpoint = endpoint;
-    this.logger = logger;
-  }
-
-  postMesage = async (message: string) => {
+  async postMessage(message: string): Promise<void> {
     try {
       const body = {
         content: message,
@@ -25,15 +23,14 @@ export class DiscordClient {
       });
       if (!ret.ok) {
         const errorJson = await ret.json().catch(() => {});
-        logger.error({ errorJson, ret, type: "discord" });
+        this.logger.error({ errorJson, ret, type: "discord" });
         const statusCode = ret.status;
         codeToThrow(statusCode, ret.statusText, "discord");
       }
     } catch (e) {
       this.handleError(e);
-      throw e;
     }
-  };
+  }
 
   private handleError(e: unknown): never {
     if (e instanceof AppError) {

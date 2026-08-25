@@ -27,7 +27,7 @@ export const handler: Handler = async (_event) => {
         texts.push(`${item.title}：${item.url}`);
       });
       logger.info({ texts });
-      await discordClient.postMesage(texts.join("\n"));
+      await discordClient.postMessage(texts.join("\n"));
       return getResponse({ result: "ok" }, 200);
     }
 
@@ -52,7 +52,7 @@ export const handler: Handler = async (_event) => {
 
     const texts = ["本日はバチャコン開催されないので作りました！"];
     texts.push(`${env.createContestTitle}：${contestBaseUrl}/${createId}`);
-    await discordClient.postMesage(texts.join("\n"));
+    await discordClient.postMessage(texts.join("\n"));
     return getResponse({ result: "ok" }, 200);
   } catch (e) {
     console.error(e);
