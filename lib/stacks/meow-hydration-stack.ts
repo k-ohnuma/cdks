@@ -33,6 +33,10 @@ export class MeowHydrationStack extends Stack {
       runtime: Runtime.NODEJS_24_X,
       environment: {
         TABLE_NAME: table.tableName,
+        // コンソールから手で設定
+        LINE_CHANNEL_ACCESS_TOKEN: "",
+        // コンソールから手で設定（カンマ区切り）
+        LINE_SEND_USER_IDS: "",
       },
     });
     table.grantWriteData(lambda);
