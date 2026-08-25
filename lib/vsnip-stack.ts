@@ -4,6 +4,7 @@ import { Runtime } from "aws-cdk-lib/aws-lambda";
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 import { Construct } from "constructs";
 import { Config } from "./config";
+import path from "node:path";
 
 export class VsnipStack extends Stack {
   constructor(scope: Construct, id: string, props: StackProps, config: Config) {
@@ -11,6 +12,7 @@ export class VsnipStack extends Stack {
 
     const BASE_NAME = "vsnip";
     const lambda = new NodejsFunction(this, "vsnip", {
+      entry: path.join(__dirname, "vsnip/bootstrap/handler.ts"),
       functionName: `${config.resourcePrefix}-${BASE_NAME}`,
       runtime: Runtime.NODEJS_22_X,
     });

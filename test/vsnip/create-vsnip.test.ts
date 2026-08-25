@@ -1,8 +1,8 @@
-import { getBody } from "../../lib/vsnip-stack.vsnip";
+import { CreateVsnip, splitBodyLines } from "../../lib/vsnip/usecase/create-vsnip";
 
-describe("", () => {
-  it("", () => {
-    const ret = getBody(bodyString);
+describe("splitBodyLines", () => {
+  it("splits lines and removes trailing whitespace", () => {
+    const ret = splitBodyLines(bodyString);
     const exp = [
       "fn main() {",
       "    input! {",
@@ -34,6 +34,27 @@ describe("", () => {
       "}",
     ];
     expect(ret).toStrictEqual(exp);
+  });
+});
+
+describe("CreateVsnip", () => {
+  it("creates a VS Code snippet and trims its metadata", () => {
+    const usecase = new CreateVsnip();
+
+    expect(
+      usecase.execute({
+        title: " main ",
+        prefix: " main ",
+        body: "fn main() {  \n}",
+        description: " Rust main function ",
+      }),
+    ).toStrictEqual({
+      main: {
+        prefix: "main",
+        body: ["fn main() {", "}"],
+        description: "Rust main function",
+      },
+    });
   });
 });
 
