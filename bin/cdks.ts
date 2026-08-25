@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { App, StackProps } from "aws-cdk-lib";
-import { VsnipStack } from "../lib/stacks/vsnip-stack";
+// import { VsnipStack } from "../lib/stacks/vsnip-stack";
 import { Config, DEFAULT_CONFIG } from "../lib/stacks/config";
 import { VirtualContestStack } from "../lib/stacks/virtual-contest-stack";
 import { VirtualContestAbcPickerStack } from "../lib/stacks/virtual-contest-abc-picker-stack";
