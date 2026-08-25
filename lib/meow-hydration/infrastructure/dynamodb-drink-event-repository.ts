@@ -41,7 +41,7 @@ export class DynamoDbDrinkEventRepository implements DrinkEventRepository {
     }
   }
 
-  async findByOccurredAtRange(fromInclusive: string, toExclusive: string): Promise<DrinkEvent[]> {
+  async findByOccurredAtRange(fromInclusive: string, toInclusive: string): Promise<DrinkEvent[]> {
     try {
       const events: DrinkEvent[] = [];
       let exclusiveStartKey: Record<string, unknown> | undefined;
@@ -49,7 +49,7 @@ export class DynamoDbDrinkEventRepository implements DrinkEventRepository {
       do {
         const result = await this.client.query({
           TableName: this.tableName,
-          KeyConditionExpression: "#waterSourceId = :waterSourceId AND #occurredAt >= :from AND #occurredAt < :to",
+          KeyConditionExpression: "#waterSourceId = :waterSourceId AND #occurredAt BETWEEN :from AND :to",
           FilterExpression: "#type = :type",
           ExpressionAttributeNames: {
             "#waterSourceId": "waterSourceId",
@@ -59,7 +59,7 @@ export class DynamoDbDrinkEventRepository implements DrinkEventRepository {
           ExpressionAttributeValues: {
             ":waterSourceId": WATER_SOURCE_ID,
             ":from": fromInclusive,
-            ":to": toExclusive,
+            ":to": toInclusive,
             ":type": "DRINK",
           },
           ExclusiveStartKey: exclusiveStartKey,

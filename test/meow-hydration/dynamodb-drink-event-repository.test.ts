@@ -35,6 +35,12 @@ describe("DynamoDbDrinkEventRepository", () => {
             type: "DRINK",
             amountMl: 18.2,
           },
+          {
+            waterSourceId: "WATER#01",
+            occurredAt: "2026-08-26T00:00:00+0900",
+            type: "DRINK",
+            amountMl: 20,
+          },
         ],
       })),
     } as unknown as DynamoDBDocument;
@@ -48,10 +54,15 @@ describe("DynamoDbDrinkEventRepository", () => {
         type: "DRINK",
         amountMl: 18.2,
       },
+      {
+        timestamp: "2026-08-26T00:00:00+0900",
+        type: "DRINK",
+        amountMl: 20,
+      },
     ]);
     expect(client.query).toHaveBeenCalledWith({
       TableName: "hydration-table",
-      KeyConditionExpression: "#waterSourceId = :waterSourceId AND #occurredAt >= :from AND #occurredAt < :to",
+      KeyConditionExpression: "#waterSourceId = :waterSourceId AND #occurredAt BETWEEN :from AND :to",
       FilterExpression: "#type = :type",
       ExpressionAttributeNames: {
         "#waterSourceId": "waterSourceId",
