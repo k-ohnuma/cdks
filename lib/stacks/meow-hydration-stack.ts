@@ -14,6 +14,12 @@ export class MeowHydrationStack extends Stack {
     super(scope, id, props);
 
     const BASE_NAME = "meow-hydration";
+    const lineEnvironment = {
+      // コンソールから手で設定
+      LINE_CHANNEL_ACCESS_TOKEN: "",
+      // コンソールから手で設定（カンマ区切り）
+      LINE_SEND_USER_IDS: "",
+    };
 
     const table = new Table(this, "table", {
       tableName: `${config.resourcePrefix}-${BASE_NAME}-${config.env}`,
@@ -36,10 +42,7 @@ export class MeowHydrationStack extends Stack {
       timeout: Duration.seconds(30),
       environment: {
         TABLE_NAME: table.tableName,
-        // コンソールから手で設定
-        LINE_CHANNEL_ACCESS_TOKEN: "",
-        // コンソールから手で設定（カンマ区切り）
-        LINE_SEND_USER_IDS: "",
+        ...lineEnvironment,
       },
     });
     table.grantWriteData(lambda);
@@ -51,10 +54,7 @@ export class MeowHydrationStack extends Stack {
       timeout: Duration.seconds(30),
       environment: {
         TABLE_NAME: table.tableName,
-        // コンソールから手で設定
-        LINE_CHANNEL_ACCESS_TOKEN: "",
-        // コンソールから手で設定（カンマ区切り）
-        LINE_SEND_USER_IDS: "",
+        ...lineEnvironment,
       },
     });
     table.grantReadData(dailyReport);
@@ -64,6 +64,14 @@ export class MeowHydrationStack extends Stack {
       schedule: Schedule.cron({ minute: "0", hour: "15" }),
     });
     dailyReportRule.addTarget(new LambdaFunction(dailyReport));
+
+    const setupState = new NodejsFunction(this, "setup-state", {
+      entry: path.join(__dirname, "../meow-hydration/bootstrap/setup-state-handler.ts"),
+      functionName: `${config.resourcePrefix}-${BASE_NAME}-setup-state`,
+      runtime: Runtime.NODEJS_24_X,
+      timeout: Duration.seconds(30),
+      environment: lineEnvironment,
+    });
 
     const apiGateway = new RestApi(this, "apigateway", {
       restApiName: `${config.resourcePrefix}-${BASE_NAME}-ag`,
@@ -79,6 +87,11 @@ export class MeowHydrationStack extends Stack {
     apiGateway.root.addMethod("POST", new LambdaIntegration(lambda, { allowTestInvoke: false }), {
       apiKeyRequired: true,
     });
+    apiGateway.root
+      .addResource("setup-state")
+      .addMethod("POST", new LambdaIntegration(setupState, { allowTestInvoke: false }), {
+        apiKeyRequired: true,
+      });
 
     const apiKey = apiGateway.addApiKey("api-key", {
       apiKeyName: `${config.resourcePrefix}-${BASE_NAME}-apikey`,
